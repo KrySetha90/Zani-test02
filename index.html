@@ -10,6 +10,7 @@
       --text-color: #000000;
       --card-bg: #f4f4f4;
       --border-color: #cccccc;
+      --icon-filter: none;
     }
 
     [data-theme="dark"] {
@@ -17,68 +18,196 @@
       --text-color: #ffffff;
       --card-bg: #1e1e1e;
       --border-color: #444444;
+      --icon-filter: invert(1);
     }
 
     body {
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       font-family: Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-color);
-      display: flex; flex-direction: column;
-      height: 100vh; overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
       transition: background-color 0.3s, color 0.3s;
     }
 
+    /* Header */
     header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 15px 20px; border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .header-left { display: flex; align-items: center; gap: 12px; }
-    .avatar { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; }
-    .logo-text { font-size: 28px; font-weight: bold; font-style: italic; margin: 0; }
-    .theme-toggle { background: none; border: none; font-size: 24px; cursor: pointer; }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
 
-    .viewport { flex: 1; position: relative; overflow: hidden; }
-    .slider { display: flex; width: 200%; height: 100%; transition: transform 0.4s ease-in-out; }
-    .view { width: 50%; height: 100%; box-sizing: border-box; padding: 20px; overflow-y: auto; }
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
 
-    .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 20px; }
-    .card { display: flex; flex-direction: column; align-items: center; }
+    .logo-text {
+      font-size: 28px;
+      font-weight: bold;
+      font-style: italic;
+      margin: 0;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    /* Views Slider */
+    .viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slider {
+      display: flex;
+      width: 200%;
+      height: 100%;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .view {
+      width: 50%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    /* Home View */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .upload-box {
-      width: 100px; height: 100px; border: 2px dashed var(--border-color);
-      border-radius: 16px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; background-color: var(--card-bg); background-size: cover;
-      background-position: center; font-size: 32px;
+      width: 100px;
+      height: 100px;
+      border: 2px dashed var(--border-color);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background-color: var(--card-bg);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      font-size: 32px;
     }
+
     .card-name {
-      margin-top: 8px; font-size: 14px; text-align: center;
-      border: none; background: transparent; color: var(--text-color); width: 100px;
+      margin-top: 8px;
+      font-size: 14px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      color: var(--text-color);
+      width: 100px;
     }
 
+    .card-name:focus {
+      outline: 1px solid var(--border-color);
+    }
+
+    /* Profile View */
     .auth-container {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; height: 80%; gap: 15px; text-align: center;
-    }
-    .auth-container input {
-      padding: 10px; width: 200px; border-radius: 6px;
-      border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color);
-    }
-    .auth-container button {
-      padding: 10px 20px; border: none; border-radius: 6px;
-      background: var(--text-color); color: var(--bg-color); cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 80%;
+      gap: 15px;
+      text-align: center;
     }
 
-    nav { display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border-color); }
-    .nav-btn { background: none; border: none; color: var(--text-color); opacity: 0.5; cursor: pointer; }
-    .nav-btn.active { opacity: 1; }
+    .auth-container input {
+      padding: 10px;
+      width: 200px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    .auth-container button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background: var(--text-color);
+      color: var(--bg-color);
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .google-btn {
+      background-color: #4285f4 !important;
+      color: white !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 220px;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-color);
+    }
+
+    .nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      opacity: 0.5;
+      filter: var(--icon-filter);
+      transition: opacity 0.3s;
+    }
+
+    .nav-btn.active {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
 
   <header>
     <div class="header-left">
-      <img src="01.png" alt="Avatar" class="avatar">
+      <img src="01.png" alt="Avatar" class="avatar" id="avatar-img">
       <h1 class="logo-text">ZaNi</h1>
     </div>
     <button class="theme-toggle" id="theme-btn">🔥</button>
@@ -93,7 +222,7 @@
           <div class="card" id="upload-slot">
             <label class="upload-box">
               +
-              <input type="file" accept="image/*" style="display: none;" onchange="uploadImage(event)">
+              <input type="file" accept="image/*" style="display: none;" onchange="handleUpload(event)">
             </label>
             <input type="text" value="Name" class="card-name">
           </div>
@@ -103,13 +232,18 @@
       <!-- Profile Layout -->
       <section class="view" id="profile-view">
         <div class="auth-container">
-          <h2 id="user-display">Not Logged In</h2>
+          <h2 id="display-username">Not Logged In</h2>
           
-          <div id="auth-box">
-            <p><strong>Login or Sign Up</strong></p>
-            <input type="email" id="email" placeholder="Email"><br><br>
-            <input type="password" id="password" placeholder="Password"><br><br>
-            <button onclick="handleAuth()">Login / Register</button>
+          <div id="login-form">
+            <button class="google-btn" onclick="googleLogin()">
+              Sign in with Google
+            </button>
+
+            <hr style="width: 100%; margin: 20px 0; border-color: var(--border-color);">
+
+            <p><strong>Or sign in with Username:</strong></p>
+            <input type="text" id="login-user" placeholder="Username"><br><br>
+            <button onclick="login()">Login</button>
           </div>
         </div>
       </section>
@@ -118,114 +252,167 @@
   </div>
 
   <nav>
-    <button class="nav-btn active" id="home-btn" onclick="switchTab('home')">Home</button>
-    <button class="nav-btn" id="profile-btn" onclick="switchTab('profile')">Profile</button>
+    <button class="nav-btn active" id="home-btn" onclick="switchTab('home')">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" id="profile-btn" onclick="switchTab('profile')">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>Profile</span>
+    </button>
   </nav>
 
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
   <script>
-    // YOUR FIREBASE CONFIGURATION GOES HERE
+    // Configured with your Firebase credentials
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyDPcWf1Zgx_zZMMYohu1I_EWlJxh_RPmI8",
+      authDomain: "zani-test02-d61f1.firebaseapp.com",
+      projectId: "zani-test02-d61f1",
+      storageBucket: "zani-test02-d61f1.firebasestorage.app",
+      messagingSenderId: "665439368213",
+      appId: "1:665439368213:web:default"
     };
     
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
 
-    let currentUser = null;
+    const slider = document.getElementById('slider');
+    const homeBtn = document.getElementById('home-btn');
+    const profileBtn = document.getElementById('profile-btn');
+    const themeBtn = document.getElementById('theme-btn');
+    let currentUser = "";
 
-    // Monitor Auth State (Loads user data automatically when logging in)
-    auth.onAuthStateChanged(user => {
+    // Restore saved local storage state or Google Auth State
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('zani_theme');
+      if (savedTheme) {
+        document.body.setAttribute('data-theme', savedTheme);
+        themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🔥';
+      }
+
+      const savedUser = localStorage.getItem('zani_user');
+      if (savedUser) {
+        currentUser = savedUser;
+        updateProfileUI();
+      }
+
+      loadSavedImages();
+    });
+
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        currentUser = user;
-        document.getElementById('user-display').innerText = `Welcome, ${user.email}`;
-        document.getElementById('auth-box').style.display = 'none';
-        loadUserImages(user.uid);
+        currentUser = user.displayName || user.email;
+        localStorage.setItem('zani_user', currentUser);
+        updateProfileUI();
       }
     });
 
-    // Handle Authentication
-    function handleAuth() {
-      const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
-
-      auth.signInWithEmailAndPassword(email, pass)
-        .catch(() => auth.createUserWithEmailAndPassword(email, pass));
+    // Google Sign-In Function
+    function googleLogin() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then(result => {
+          currentUser = result.user.displayName;
+          localStorage.setItem('zani_user', currentUser);
+          updateProfileUI();
+        })
+        .catch(error => {
+          alert(error.message);
+        });
     }
 
-    // Upload Picture to Firebase Cloud Storage
-    function uploadImage(event) {
-      if (!currentUser) return alert("Please log in on the Profile tab first!");
-      
-      const file = event.target.files[0];
-      if (file) {
-        const fileRef = storage.ref(`users/${currentUser.uid}/${Date.now()}_${file.name}`);
-        fileRef.put(file).then(snapshot => {
-          snapshot.ref.getDownloadURL().then(url => {
-            // Save Image URL to Database
-            db.collection("users").doc(currentUser.uid).collection("photos").add({
-              url: url,
-              name: "Name",
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            renderPhotoCard(url, "Name");
-          });
-        });
+    // Standard Username Login
+    function login() {
+      const name = document.getElementById('login-user').value;
+      if (name) {
+        currentUser = name;
+        localStorage.setItem('zani_user', name);
+        updateProfileUI();
       }
     }
 
-    // Fetch pictures forever from Cloud Database
-    function loadUserImages(userId) {
-      db.collection("users").doc(userId).collection("photos").get().then(snapshot => {
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          renderPhotoCard(data.url, data.name);
-        });
-      });
-    }
-
-    function renderPhotoCard(url, name) {
-      const grid = document.getElementById('grid');
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="upload-box" style="background-image: url('${url}')"></div>
-        <input type="text" value="${name}" class="card-name">
-      `;
-      grid.insertBefore(card, document.getElementById('upload-slot'));
+    function updateProfileUI() {
+      document.getElementById('display-username').innerText = `Welcome, ${currentUser}!`;
+      document.getElementById('login-form').style.display = 'none';
     }
 
     // Tab Slider
     function switchTab(tab) {
-      const slider = document.getElementById('slider');
       if (tab === 'home') {
         slider.style.transform = 'translateX(0%)';
-        document.getElementById('home-btn').classList.add('active');
-        document.getElementById('profile-btn').classList.remove('active');
+        homeBtn.classList.add('active');
+        profileBtn.classList.remove('active');
       } else {
         slider.style.transform = 'translateX(-50%)';
-        document.getElementById('profile-btn').classList.add('active');
-        document.getElementById('home-btn').classList.remove('active');
+        profileBtn.classList.add('active');
+        homeBtn.classList.remove('active');
       }
     }
 
-    // Theme Toggle
-    document.getElementById('theme-btn').addEventListener('click', () => {
+    // Picture Upload & Storage
+    function handleUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imageData = e.target.result;
+          const box = event.target.parentElement;
+          box.style.backgroundImage = `url(${imageData})`;
+          box.innerText = ''; 
+          
+          saveImageToStorage(imageData);
+          addNewUploadSlot();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function saveImageToStorage(imageData) {
+      let images = JSON.parse(localStorage.getItem('zani_images')) || [];
+      images.push(imageData);
+      localStorage.setItem('zani_images', JSON.stringify(images));
+    }
+
+    function loadSavedImages() {
+      let images = JSON.parse(localStorage.getItem('zani_images')) || [];
+      const uploadSlot = document.getElementById('upload-slot');
+      
+      images.forEach(imageData => {
+        const grid = document.getElementById('grid');
+        const savedCard = document.createElement('div');
+        savedCard.className = 'card';
+        savedCard.innerHTML = `
+          <div class="upload-box" style="background-image: url(${imageData})"></div>
+          <input type="text" value="Name" class="card-name">
+        `;
+        grid.insertBefore(savedCard, uploadSlot);
+      });
+    }
+
+    function addNewUploadSlot() {
+      const grid = document.getElementById('grid');
+      const newCard = document.createElement('div');
+      newCard.className = 'card';
+      newCard.innerHTML = `
+        <label class="upload-box">
+          +
+          <input type="file" accept="image/*" style="display: none;" onchange="handleUpload(event)">
+        </label>
+        <input type="text" value="Name" class="card-name">
+      `;
+      grid.appendChild(newCard);
+    }
+
+    // Theme Switch
+    themeBtn.addEventListener('click', () => {
       const isDark = document.body.getAttribute('data-theme') === 'dark';
-      document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-      document.getElementById('theme-btn').textContent = isDark ? '🔥' : '☀️';
+      const newTheme = isDark ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', newTheme);
+      themeBtn.textContent = isDark ? '🔥' : '☀️';
+      localStorage.setItem('zani_theme', newTheme);
     });
   </script>
 </body>
