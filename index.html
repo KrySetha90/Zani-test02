@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZaNi Web App</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --card-bg: #f4f4f4;
+      --border-color: #cccccc;
+      --icon-filter: none;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --card-bg: #1e1e1e;
+      --border-color: #444444;
+      --icon-filter: invert(1);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: bold;
+      font-style: italic;
+      margin: 0;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-color);
+      font-size: 14px;
+    }
+
+    .search-btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4285f4;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slider {
+      display: flex;
+      width: 200%;
+      height: 100%;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .view {
+      width: 50%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .user-results-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .user-result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .user-result-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-circle-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #fff;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-handle {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .user-status {
+      font-size: 13px;
+      opacity: 0.6;
+    }
+
+    .view-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 15px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .view-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    .searched-profile-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+      position: relative;
+    }
+
+    .searched-profile-card .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .searched-profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 10px;
+      object-fit: cover;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .upload-box {
+      width: 100px;
+      height: 100px;
+      border: 2px dashed var(--border-color);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background-color: var(--card-bg);
+      position: relative;
+      font-size: 28px;
+      text-decoration: none;
+      color: var(--text-color);
+      overflow: hidden;
+      text-align: center;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+
+    .file-ext {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 4px;
+      color: #4285f4;
+    }
+
+    .card-name {
+      margin-top: 6px;
+      font-size: 12px;
+      text-align: center;
+      color: var(--text-color);
+      width: 100px;
+      word-break: break-all;
+    }
+
+    .card-user {
+      font-size: 10px;
+      opacity: 0.7;
+      text-align: center;
+    }
+
+    .profile-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      max-width: 300px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .profile-avatar-large {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border-color);
+    }
+
+    .profile-username-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .google-btn {
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .login-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .login-box input {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .login-box button {
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      background: var(--text-color);
+      color: var(--bg-color);
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .logout-btn {
+      background-color: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .edit-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 5px;
+    }
+
+    .edit-section input[type="text"] {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-color);
+      width: 90%;
+    }
+
+    .edit-section button {
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--text-color);
+      color: var(--bg-color);
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .upload-label-btn {
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: underline;
+      color: #4285f4;
+    }
+
+    .cooldown-text {
+      font-size: 11px;
+      color: #dc2626;
+      margin: 0;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-color);
+    }
+
+    .nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      opacity: 0.5;
+      filter: var(--icon-filter);
+      transition: opacity 0.3s;
+    }
+
+    .nav-btn.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <img src="01.png" alt="Avatar" class="avatar" id="avatar-img" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\'><rect width=\'50\' height=\'50\' fill=\'%234285f4\'/><text x=\'50%\' y=\'50%\' fill=\'white\' font-size=\'20\' dominant-baseline=\'middle\' text-anchor=\'middle\'>Z</text></svg>';">
+      <h1 class="logo-text">ZaNi</h1>
+    </div>
+    <button class="theme-toggle" id="theme-btn">🔥</button>
+  </header>
+
+  <div class="viewport">
+    <div class="slider" id="slider">
+      
+      <!-- Home Layout -->
+      <section class="view" id="home-view">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search username or file...">
+          <button class="search-btn" onclick="executeSearch()">Search</button>
+        </div>
+
+        <div id="user-results-list" class="user-results-container" style="display: none;"></div>
+
+        <div id="searched-profile" class="searched-profile-card" style="display: none;">
+          <button class="close-btn" onclick="clearUserSelection()">✕</button>
+          <div id="searched-avatar-circle" class="searched-profile-avatar">A</div>
+          <h2 id="searched-user-title" style="margin: 0; font-size: 20px;"></h2>
+          <p id="searched-user-status" style="margin: 4px 0 0 0; font-size: 14px; opacity: 0.6;"></p>
+        </div>
+
+        <div class="grid-container" id="grid">
+          <div class="card" id="upload-slot">
+            <label class="upload-box" id="plus-box">
+              +
+              <input type="file" id="file-input" style="display: none;" onchange="handleFileUpload(event)">
+            </label>
+            <span class="card-name" id="status-msg">Upload File</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Layout -->
+      <section class="view" id="profile-view">
+        <div class="profile-card">
+          <img src="01.png" alt="Profile Picture" id="large-profile-pic" class="profile-avatar-large" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%234285f4\'/><text x=\'50%\' y=\'50%\' fill=\'white\' font-size=\'40\' dominant-baseline=\'middle\' text-anchor=\'middle\'>Z</text></svg>';">
+          <h2 id="profile-name-display" class="profile-username-title">Not Logged In</h2>
+
+          <div id="auth-login-controls" style="width: 100%;">
+            <button class="google-btn" onclick="googleLogin()">Sign in with Google</button>
+            <hr style="width: 100%; border-color: var(--border-color); margin: 12px 0;">
+            <div class="login-box">
+              <input type="text" id="login-user" placeholder="Username">
+              <button onclick="loginWithUsername()">Login</button>
+            </div>
+          </div>
+
+          <div id="auth-user-controls" style="display: none; width: 100%;">
+            <button class="logout-btn" onclick="logout()">Log Out</button>
+
+            <div class="edit-section">
+              <hr style="width: 100%; border-color: var(--border-color); margin: 10px 0;">
+              
+              <div>
+                <input type="text" id="edit-name-input" placeholder="New Username">
+                <button onclick="updateUsername()" style="margin-top: 6px; width: 100%;">Save Name</button>
+                <p id="name-cooldown" class="cooldown-text"></p>
+              </div>
+
+              <hr style="width: 100%; border-color: var(--border-color); margin: 10px 0;">
+
+              <div>
+                <label class="upload-label-btn">
+                  Change Profile Picture
+                  <input type="file" accept="image/*" style="display: none;" onchange="updateAvatar(event)">
+                </label>
+                <p id="pic-cooldown" class="cooldown-text"></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <nav>
+    <button class="nav-btn active" id="home-btn" onclick="switchTab('home')">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" id="profile-btn" onclick="switchTab('profile')">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+  <script>
+    // Safe IndexedDB Storage for local files without 5MB limits
+    const dbPromise = indexedDB.open("ZaniAppDB", 1);
+    dbPromise.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("files")) {
+        db.createObjectStore("files", { keyPath: "id", autoIncrement: true });
+      }
+    };
+
+    function saveFileIndexedDB(fileData) {
+      dbPromise.onsuccess = (e) => {
+        const db = e.target.result;
+        const tx = db.transaction("files", "readwrite");
+        tx.objectStore("files").add(fileData);
+      };
+    }
+
+    function loadFilesIndexedDB() {
+      dbPromise.onsuccess = (e) => {
+        const db = e.target.result;
+        const tx = db.transaction("files", "readonly");
+        const req = tx.objectStore("files").getAll();
+        req.onsuccess = () => {
+          req.result.forEach(file => {
+            addFileCardToGrid(file.name, file.url, file.user || "Anonymous", file.avatar || "01.png");
+          });
+        };
+      };
+    }
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDPcWf1Zgx_zZMMYohu1I_EWlJxh_RPmI8",
+      authDomain: "zani-test02-d61f1.firebaseapp.com",
+      projectId: "zani-test02-d61f1",
+      storageBucket: "zani-test02-d61f1.firebasestorage.app",
+      messagingSenderId: "665439368213",
+      appId: "1:665439368213:web:default"
+    };
+    
+    let storage = null;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      storage = firebase.storage();
+    } catch(e) {
+      console.warn("Firebase failed to initialize, using local fallback mode.");
+    }
+
+    const slider = document.getElementById('slider');
+    const homeBtn = document.getElementById('home-btn');
+    const profileBtn = document.getElementById('profile-btn');
+    const themeBtn = document.getElementById('theme-btn');
+    let currentUser = "";
+
+    const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        const savedTheme = localStorage.getItem('zani_theme');
+        if (savedTheme) {
+          document.body.setAttribute('data-theme', savedTheme);
+          themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🔥';
+        }
+
+        const savedUser = localStorage.getItem('zani_user');
+        if (savedUser) {
+          currentUser = savedUser;
+          registerAccount(currentUser, true);
+          renderLoggedInUI();
+        } else {
+          renderLoggedOutUI();
+        }
+
+        loadSavedAvatar();
+        loadFilesIndexedDB();
+      } catch (err) {
+        console.error("Initialization Error Handled:", err);
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (currentUser) {
+        setAccountStatus(currentUser, false);
+      }
+    });
+
+    if (window.firebase && firebase.auth) {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          currentUser = user.displayName || user.email;
+          localStorage.setItem('zani_user', currentUser);
+          registerAccount(currentUser, true);
+          renderLoggedInUI();
+        }
+      });
+    }
+
+    function registerAccount(username, isOnline) {
+      try {
+        let accounts = JSON.parse(localStorage.getItem('zani_registered_accounts')) || {};
+        const userAvatar = localStorage.getItem(`zani_avatar_${username}`) || "01.png";
+        
+        accounts[username] = {
+          name: username,
+          isOnline: isOnline,
+          avatar: userAvatar,
+          color: getColorForName(username)
+        };
+
+        localStorage.setItem('zani_registered_accounts', JSON.stringify(accounts));
+      } catch(e) {}
+    }
+
+    function setAccountStatus(username, isOnline) {
+      try {
+        let accounts = JSON.parse(localStorage.getItem('zani_registered_accounts')) || {};
+        if (accounts[username]) {
+          accounts[username].isOnline = isOnline;
+          localStorage.setItem('zani_registered_accounts', JSON.stringify(accounts));
+        }
+      } catch(e) {}
+    }
+
+    function getColorForName(name) {
+      const colors = ["#d9777f", "#6b8e78", "#7aa4b6", "#e0a96d", "#9a7aa6"];
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) hash += name.charCodeAt(i);
+      return colors[hash % colors.length];
+    }
+
+    function googleLogin() {
+      if (!window.firebase || !firebase.auth) {
+        fallbackLogin();
+        return;
+      }
+
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then(result => {
+          currentUser = result.user.displayName || result.user.email;
+          localStorage.setItem('zani_user', currentUser);
+          registerAccount(currentUser, true);
+          renderLoggedInUI();
+        })
+        .catch(error => {
+          fallbackLogin();
+        });
+    }
+
+    function fallbackLogin() {
+      const name = prompt("Enter username (Fallback Mode):");
+      if (name) {
+        currentUser = name.trim();
+        localStorage.setItem('zani_user', currentUser);
+        registerAccount(currentUser, true);
+        renderLoggedInUI();
+      }
+    }
+
+    function loginWithUsername() {
+      const name = document.getElementById('login-user').value.trim();
+      if (name) {
+        currentUser = name;
+        localStorage.setItem('zani_user', currentUser);
+        registerAccount(currentUser, true);
+        renderLoggedInUI();
+      }
+    }
+
+    function logout() {
+      if (currentUser) {
+        setAccountStatus(currentUser, false);
+      }
+      if (window.firebase && firebase.auth) {
+        firebase.auth().signOut().catch(() => {});
+      }
+      currentUser = "";
+      localStorage.removeItem('zani_user');
+      renderLoggedOutUI();
+    }
+
+    function renderLoggedInUI() {
+      document.getElementById('profile-name-display').innerText = currentUser;
+      document.getElementById('auth-login-controls').style.display = 'none';
+      document.getElementById('auth-user-controls').style.display = 'block';
+      checkCooldowns();
+    }
+
+    function renderLoggedOutUI() {
+      document.getElementById('profile-name-display').innerText = "Not Logged In";
+      document.getElementById('auth-login-controls').style.display = 'block';
+      document.getElementById('auth-user-controls').style.display = 'none';
+    }
+
+    function switchTab(tab) {
+      if (tab === 'home') {
+        slider.style.transform = 'translateX(0%)';
+        homeBtn.classList.add('active');
+        profileBtn.classList.remove('active');
+      } else {
+        slider.style.transform = 'translateX(-50%)';
+        profileBtn.classList.add('active');
+        homeBtn.classList.remove('active');
+      }
+    }
+
+    function checkCooldowns() {
+      if (!currentUser) return;
+      const lastLastNameUpdate = localStorage.getItem(`zani_lastNameChange_${currentUser}`);
+      const lastPicUpdate = localStorage.getItem(`zani_lastPicChange_${currentUser}`);
+      const now = Date.now();
+
+      if (lastLastNameUpdate && (now - lastLastNameUpdate < TEN_DAYS_MS)) {
+        const daysLeft = Math.ceil((TEN_DAYS_MS - (now - lastLastNameUpdate)) / (1000 * 60 * 60 * 24));
+        document.getElementById('name-cooldown').innerText = `Cooldown: Wait ${daysLeft} days to change name.`;
+      } else {
+        document.getElementById('name-cooldown').innerText = "";
+      }
+
+      if (lastPicUpdate && (now - lastPicUpdate < TEN_DAYS_MS)) {
+        const daysLeft = Math.ceil((TEN_DAYS_MS - (now - lastPicUpdate)) / (1000 * 60 * 60 * 24));
+        document.getElementById('pic-cooldown').innerText = `Cooldown: Wait ${daysLeft} days to change picture.`;
+      } else {
+        document.getElementById('pic-cooldown').innerText = "";
+      }
+    }
+
+    function updateUsername() {
+      const newName = document.getElementById('edit-name-input').value.trim();
+      if (!newName) return;
+
+      const lastLastNameUpdate = localStorage.getItem(`zani_lastNameChange_${currentUser}`);
+      const now = Date.now();
+
+      if (lastLastNameUpdate && (now - lastLastNameUpdate < TEN_DAYS_MS)) {
+        alert("You must wait 10 days before changing your username again!");
+        return;
+      }
+
+      if (currentUser) setAccountStatus(currentUser, false);
+
+      localStorage.setItem(`zani_lastNameChange_${currentUser}`, now);
+      currentUser = newName;
+      localStorage.setItem('zani_user', currentUser);
+      registerAccount(currentUser, true);
+      renderLoggedInUI();
+      alert("Username updated successfully!");
+    }
+
+    function updateAvatar(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const lastPicUpdate = localStorage.getItem(`zani_lastPicChange_${currentUser}`);
+      const now = Date.now();
+
+      if (lastPicUpdate && (now - lastPicUpdate < TEN_DAYS_MS)) {
+        alert("You must wait 10 days before changing your avatar picture again!");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imgData = e.target.result;
+        document.getElementById('avatar-img').src = imgData;
+        document.getElementById('large-profile-pic').src = imgData;
+        localStorage.setItem(`zani_avatar_${currentUser}`, imgData);
+        localStorage.setItem(`zani_lastPicChange_${currentUser}`, now);
+        registerAccount(currentUser, true);
+        checkCooldowns();
+        alert("Profile picture updated successfully!");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadSavedAvatar() {
+      if (currentUser) {
+        const savedAvatar = localStorage.getItem(`zani_avatar_${currentUser}`);
+        if (savedAvatar) {
+          document.getElementById('avatar-img').src = savedAvatar;
+          document.getElementById('large-profile-pic').src = savedAvatar;
+        }
+      }
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const statusMsg = document.getElementById('status-msg');
+      statusMsg.innerText = "Uploading...";
+
+      if (storage) {
+        const storageRef = storage.ref(`uploads/${Date.now()}_${file.name}`);
+        const uploadTask = storageRef.put(file);
+
+        uploadTask.on('state_changed', 
+          null, 
+          (error) => {
+            processLocalFile(file);
+          }, 
+          () => {
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              const uploader = currentUser || "Anonymous";
+              const userAvatar = localStorage.getItem(`zani_avatar_${uploader}`) || "01.png";
+              if (uploader !== "Anonymous") registerAccount(uploader, true);
+
+              addFileCardToGrid(file.name, downloadURL, uploader, userAvatar);
+              saveFileIndexedDB({ name: file.name, url: downloadURL, user: uploader, avatar: userAvatar });
+              statusMsg.innerText = "Upload File";
+            });
+          }
+        );
+      } else {
+        processLocalFile(file);
+      }
+    }
+
+    function processLocalFile(file) {
+      const statusMsg = document.getElementById('status-msg');
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const fileUrl = e.target.result;
+        const uploader = currentUser || "Anonymous";
+        const userAvatar = localStorage.getItem(`zani_avatar_${uploader}`) || "01.png";
+        if (uploader !== "Anonymous") registerAccount(uploader, true);
+
+        addFileCardToGrid(file.name, fileUrl, uploader, userAvatar);
+        saveFileIndexedDB({ name: file.name, url: fileUrl, user: uploader, avatar: userAvatar });
+        statusMsg.innerText = "Upload File";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addFileCardToGrid(fileName, fileUrl, uploader, avatar) {
+      const grid = document.getElementById('grid');
+      const uploadSlot = document.getElementById('upload-slot');
+
+      const ext = fileName.split('.').pop().toUpperCase();
+      const isImage = ['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP'].includes(ext);
+
+      const card = document.createElement('div');
+      card.className = 'card file-item';
+      card.setAttribute('data-name', fileName.toLowerCase());
+      card.setAttribute('data-user', uploader.toLowerCase());
+      card.setAttribute('data-avatar', avatar);
+
+      if (isImage) {
+        card.innerHTML = `
+          <a href="${fileUrl}" target="_blank" download class="upload-box" style="background-image: url(${fileUrl}); background-size: cover;"></a>
+          <span class="card-name">${fileName}</span>
+          <span class="card-user">by ${uploader}</span>
+        `;
+      } else {
+        card.innerHTML = `
+          <a href="${fileUrl}" target="_blank" download class="upload-box">
+            📄
+            <span class="file-ext">.${ext}</span>
+          </a>
+          <span class="card-name">${fileName}</span>
+          <span class="card-user">by ${uploader}</span>
+        `;
+      }
+
+      grid.insertBefore(card, uploadSlot);
+    }
+
+    function executeSearch() {
+      const rawQuery = document.getElementById('search-input').value.trim();
+      const query = rawQuery.toLowerCase();
+      const items = document.querySelectorAll('.file-item');
+      const resultsContainer = document.getElementById('user-results-list');
+      const profileCard = document.getElementById('searched-profile');
+
+      resultsContainer.innerHTML = '';
+      profileCard.style.display = 'none';
+
+      if (!query) {
+        resultsContainer.style.display = 'none';
+        items.forEach(item => item.style.display = 'flex');
+        return;
+      }
+
+      let accountsObj = {};
+      try {
+        accountsObj = JSON.parse(localStorage.getItem('zani_registered_accounts')) || {};
+      } catch(e) {}
+      
+      const accountsList = Object.values(accountsObj);
+      const searchQuery = query.startsWith('@') ? query.substring(1) : query;
+      const matchedUsers = accountsList.filter(acc => acc.name.toLowerCase().includes(searchQuery));
+
+      if (matchedUsers.length > 0) {
+        matchedUsers.forEach(acc => {
+          const row = document.createElement('div');
+          row.className = 'user-result-row';
+
+          const initial = acc.name.charAt(0).toUpperCase();
+          const statusText = acc.isOnline ? "online" : "offline";
+          
+          let avatarMarkup = `<div class="user-circle-avatar" style="background-color: ${acc.color};">${initial}</div>`;
+          if (acc.avatar && acc.avatar !== "01.png") {
+            avatarMarkup = `<img src="${acc.avatar}" class="user-circle-avatar">`;
+          }
+
+          row.innerHTML = `
+            <div class="user-result-left">
+              ${avatarMarkup}
+              <div class="user-info">
+                <span class="user-handle">@${acc.name}</span>
+                <span class="user-status">${statusText}</span>
+              </div>
+            </div>
+            <button class="view-btn" onclick="selectUser('${acc.name}', '${statusText}')">view</button>
+          `;
+          resultsContainer.appendChild(row);
+        });
+        resultsContainer.style.display = 'flex';
+      } else {
+        resultsContainer.style.display = 'none';
+      }
+
+      items.forEach(item => {
+        const fileName = item.getAttribute('data-name');
+        const uploader = item.getAttribute('data-user');
+
+        if (fileName.includes(searchQuery) || uploader.includes(searchQuery)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function selectUser(username, status) {
+      document.getElementById('user-results-list').style.display = 'none';
+
+      let accountsObj = {};
+      try {
+        accountsObj = JSON.parse(localStorage.getItem('zani_registered_accounts')) || {};
+      } catch(e) {}
+
+      const acc = accountsObj[username] || { color: getColorForName(username), avatar: "01.png" };
+
+      const avatarContainer = document.getElementById('searched-avatar-circle');
+      if (acc.avatar && acc.avatar !== "01.png") {
+        avatarContainer.innerHTML = `<img src="${acc.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+      } else {
+        avatarContainer.innerText = username.charAt(0).toUpperCase();
+        avatarContainer.style.backgroundColor = acc.color;
+      }
+
+      document.getElementById('searched-user-title').innerText = `@${username}`;
+      document.getElementById('searched-user-status').innerText = status;
+      document.getElementById('searched-profile').style.display = 'flex';
+
+      const items = document.querySelectorAll('.file-item');
+      items.forEach(item => {
+        const uploader = item.getAttribute('data-user');
+        if (uploader === username.toLowerCase()) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function clearUserSelection() {
+      document.getElementById('searched-profile').style.display = 'none';
+      executeSearch();
+    }
+
+    document.getElementById('search-input').addEventListener('input', executeSearch);
+
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', newTheme);
+      themeBtn.textContent = isDark ? '🔥' : '☀️';
+      localStorage.setItem('zani_theme', newTheme);
+    });
+  </script>
+</body>
+</html>
